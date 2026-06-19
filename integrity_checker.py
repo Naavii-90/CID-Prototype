@@ -13,7 +13,7 @@ def generate_file_hash(file_path):
     try:
         #open the file in binary mode ('rb') to read raw data
         with open(file_path, "rb") as f: 
-            #read he file in 4096 byte blocks
+            #read the file in 4096 byte blocks
             for byte_block in iter(lambda: f.read(4096), b""):
                 sha256_hash.update(byte_block)
 
@@ -29,7 +29,7 @@ def verify_media_integrity(reference_hash, file_to_check):
     current_hash= generate_file_hash(file_to_check)
 
     if current_hash is None:
-        return "Error: Media file not found"
+        return False, None
     
     if reference_hash==current_hash: 
         return True, current_hash  #Integrity maintained
@@ -39,7 +39,7 @@ def verify_media_integrity(reference_hash, file_to_check):
     # SIMULATION / PROTOTYPE TEST SCRIPT
 
 if __name__ == "__main__": 
-        print("--- DeeepShield: Media Integrity Verification Module ---\n")
+        print("--- DeepShield: Media Integrity Verification Module ---\n")
 
         # step 1: create dummy file for simulation
         test_media = "sample_video_data.txt"

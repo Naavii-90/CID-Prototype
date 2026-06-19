@@ -61,7 +61,7 @@ def analyze_facial_media(image_path, cnn_model):
     input_data = np.expand_dims(normalized_image, axis=0)
 
     #step 5: Run the deepfake detection prediction
-    print("[*] Analyzing texture inconsistencies and facial artifqacts...")
+    print("[*] Analyzing texture inconsistencies and facial artifacts...")
     prediction = cnn_model.predict(input_data, verbose=0)
 
     #convert the raw output from decimal to percentage
