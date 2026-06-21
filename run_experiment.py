@@ -1,8 +1,8 @@
 import os
 import pandas as pd
 
-from baselines import mesonet
-from baselines import xception
+from baseline_system import mesonet
+from baseline_system import xception
 
 # import your DeepShield function
 from deepshield.deepfake_detector import analyze_facial_media
