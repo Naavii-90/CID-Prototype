@@ -5,7 +5,7 @@ from baseline_system import mesonet
 from baseline_system import xception
 
 # import your DeepShield function
-from deepshield.deepfake_detector import analyze_facial_media
+from deepfake_detector import analyze_facial_media
 
 DATASET = "dataset"
 
