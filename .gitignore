@@ -1,1 +1,11 @@
 venv/
+__pycache__/
+*.pyc
+
+# Runtime-generated files (created fresh each time the dashboard runs)
+uploaded_temp.jpg
+extracted_face_for_CNN.jpg
+face_detection_result.jpg
+
+# Trained model weights (large binary file - regenerate with train_model.py)
+deepshield_trained_weights.h5

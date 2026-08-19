@@ -6,34 +6,45 @@ import tensorflow as tf
 import cv2
 import numpy as np
 
+WEIGHTS_PATH = 'deepshield_trained_weights.weights.h5'
+
+
 def build_cnn_architecture():
     """
-    Builds the Convolutional Neural Network (CNN) architecture
+    Builds the deepfake-detection model: a frozen, ImageNet-pretrained
+    MobileNetV2 backbone (transfer learning) with a small trainable
+    classification head on top.
+
+    NOTE: this architecture must exactly match the one built in
+    train_model.py's build_transfer_model() -- that's what produced the
+    saved weights this function loads below. If you change one, change both.
     """
-    print("[*] Initializing DeepShield CNN Architecture...")
+    print("[*] Initializing DeepShield CNN Architecture (MobileNetV2 transfer learning)...")
 
-    model = tf.keras.Sequential([
-        #1st Convolutional Layer (Extracts basic facial features)
-        tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(128, 128, 3)),
-        tf.keras.layers.MaxPooling2D(2,2),
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=(128, 128, 3),
+        include_top=False,
+        weights='imagenet',
+    )
+    base_model.trainable = False
 
-        #2nd Convolutional Layer (analyses texture inconsistencies/artifacts)
-        tf.keras.layers.Conv2D(64, (3,3), activation='relu'), 
-        tf.keras.layers.MaxPooling2D(2,2),
+    inputs = tf.keras.Input(shape=(128, 128, 3))
+    x = tf.keras.applications.mobilenet_v2.preprocess_input(inputs * 255.0)
+    x = base_model(x, training=False)
+    x = tf.keras.layers.GlobalAveragePooling2D()(x)
+    x = tf.keras.layers.Dense(64, activation='relu')(x)
+    x = tf.keras.layers.Dropout(0.3)(x)
+    outputs = tf.keras.layers.Dense(1, activation='sigmoid')(x)
 
-        #Flattening the data for the decision-making layers
-        tf.keras.layers.Flatten(),
+    model = tf.keras.Model(inputs, outputs)
 
-        #Dense decision layer
-        tf.keras.layers.Dense(64, activation='relu'),
-
-        #output layer (outputs a probability between 0.0 and 1.0)
-        tf.keras.layers.Dense(1, activation = 'sigmoid')
-    
-    ])
-
-    # In a full deployment, we would load the trained FaceForensics++ weights here:
-    # model.load_weights('deepshield_trained_weights.h5')
+    if os.path.exists(WEIGHTS_PATH):
+        model.load_weights(WEIGHTS_PATH)
+        print(f"[+] Loaded trained weights from '{WEIGHTS_PATH}'")
+    else:
+        print(f"[!] WARNING: '{WEIGHTS_PATH}' not found -- running with "
+              f"UNTRAINED weights. Scores below are meaningless until you "
+              f"run train_model.py first.")
 
     return model
 
