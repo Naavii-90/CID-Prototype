@@ -149,9 +149,7 @@ def main():
         "\n[!] Honest caveat: this model was trained on only 100 images "
         "(50 real / 50 fake). That's enough to prove the pipeline actually "
         "learns something real, but it is NOT enough data for a reliable, "
-        "production-grade deepfake detector. State this clearly in your "
-        "README/portfolio writeup -- report the real accuracy number above, "
-        "don't imply this is production-ready."
+        "production-grade deepfake detector."
     )
 
     model.save_weights(WEIGHTS_OUT)
